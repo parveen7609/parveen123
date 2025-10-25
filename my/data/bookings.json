@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "name": "Sample Customer",
+    "phone": "9000000000",
+    "service": "Mehndi",
+    "date": "2025-10-01",
+    "time": "10:00",
+    "notes": "Sample booking",
+    "price": "500",
+    "status": "confirmed"
+  }
+]

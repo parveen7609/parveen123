@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Admin Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f6f7fb}
+    .card{background:white;padding:24px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.06);width:380px}
+    label{display:block;margin-bottom:6px;font-weight:600}
+    input{width:100%;padding:10px;margin-bottom:12px;border:1px solid #e2e8f0;border-radius:6px}
+    button{width:100%;padding:10px;border:none;background:#0ea5a4;color:white;border-radius:8px;font-weight:700}
+    .error{color:#b91c1c;display:none;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin:0 0 8px 0">Admin Login</h2>
+    <form id="admin-login-form">
+      <label for="admin-id">Admin ID</label>
+      <input id="admin-id" type="text" required />
+      <label for="admin-password">Password</label>
+      <input id="admin-password" type="password" required />
+      <button type="submit">Login</button>
+      <div id="login-error" class="error">Invalid credentials</div>
+    </form>
+  </div>
+  <script src="js/login.js"></script>
+
+<script>
+document.getElementById('admin-login-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const id = document.getElementById('admin-id').value.trim();
+  const password = document.getElementById('admin-password').value;
+  const err = document.getElementById('login-error');
+  if(err) err.style.display='none';
+  try{
+    const res = await fetch('/.netlify/functions/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, password})});
+    if(res.ok){
+      const json = await res.json();
+      localStorage.setItem('admin_token', json.token);
+      localStorage.setItem('admin_name', id);
+      window.location.href = '/admin.html';
+    } else {
+      const txt = await res.text();
+      if(err){ err.textContent = txt || 'Invalid credentials'; err.style.display='block'; } else alert(txt || 'Invalid credentials');
+    }
+  }catch(err){
+    if(err){ err.textContent = 'Login service unavailable'; err.style.display = 'block'; } else alert('Login service unavailable');
+  }
+});
+</script>
+</body>
+</html>
